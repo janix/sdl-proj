@@ -9,8 +9,8 @@ SDL_Window* gWindow = NULL;
 SDL_Surface* gScreenSurface = NULL;
 SDL_Surface* gHelloWorld = NULL;
 
-int SCREEN_WIDTH = 1629;
-int SCREEN_HEIGHT = 2499;
+int SCREEN_WIDTH = 410;
+int SCREEN_HEIGHT = 308;
 
 bool init()
 {
@@ -39,10 +39,10 @@ bool init()
 bool loadMedia()
 {
 	bool success = true;
-	gHelloWorld = SDL_LoadBMP("../images/hello.bmp");
+	gHelloWorld = IMG_Load("../images/hello.jpg");
 	if(gHelloWorld == NULL)
 	{
-		printf("Unable to load image %s! SDL Error: %s\n", "../images/hello.bmp", SDL_GetError() );
+		printf("Unable to load image %s! SDL Error: %s\n", "../images/hello.jpg", SDL_GetError() );
 		success = false;
 	}
 	return success;
