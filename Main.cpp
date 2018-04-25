@@ -1,8 +1,10 @@
-#include <SDL.h>
-#include "stdio.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <stdio.h>
+#include <string>
 
 bool init();
-bool loadMedia();
+SDL_Surface* loadSurface(std::string path);
 void close();
 
 SDL_Window* gWindow = NULL;
@@ -29,23 +31,40 @@ bool init()
 			success = false;
 		}
 		else
-		{
-			gScreenSurface = SDL_GetWindowSurface(gWindow);
+		{	
+			int imgFlags = IMG_INIT_PNG;
+			if( !(IMG_Init(imgFlags) &imgFlags))
+			{
+				printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+				success = false;
+			}
+			else
+			{		
+				gScreenSurface = SDL_GetWindowSurface(gWindow);
+			}
 		}
 	}
 	return success;
 }
 
-bool loadMedia()
+SDL_Surface* loadSurface(std::string path)
 {
-	bool success = true;
-	gHelloWorld = IMG_Load("../images/hello.jpg");
-	if(gHelloWorld == NULL)
+	SDL_Surface* optimizedSurface = NULL;
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+	if (loadedSurface == NULL)
 	{
-		printf("Unable to load image %s! SDL Error: %s\n", "../images/hello.jpg", SDL_GetError() );
-		success = false;
+		printf ("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
 	}
-	return success;
+	else
+	{
+		optimizedSurface = SDL_ConvertSurface(loadedSurface, gScreenSurface->format, NULL);
+		if (optimizedSurface == NULL)
+		{
+			printf("Unable to optimize image %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+		}
+		SDL_FreeSurface(loadedSurface);
+	}
+	return optimizedSurface;
 }
 
 void close()
@@ -65,19 +84,7 @@ int main(int argc, char* args[])
 	{
 		printf("Failed to initialize!\n");
 	}
-	else
-	{
-		if (!loadMedia())
-		{
-			printf("Failed to load media!\n");
-		}
-		else
-		{
-			SDL_BlitSurface(gHelloWorld, NULL, gScreenSurface, NULL);
-			SDL_UpdateWindowSurface(gWindow);
-			SDL_Delay(2000);
-		}
-	}
+	loadSurface("images/hello.png");
 	close();
 
 	return 0;
