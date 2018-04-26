@@ -5,6 +5,8 @@ project(SDL2Test)
 include(ExternalProject)
 include_directories(${CMAKE_SOURCE_DIR}/external/SDL/include ${CMAKE_SOURCE_DIR}/external/SDL_image)
 
+find_package(Threads REQUIRED)
+
 if(WIN32)
 	ExternalProject_Add(
   		SDLlib
@@ -19,14 +21,13 @@ elseif(UNIX)
 	)
 endif()
 
-#set(ENV{PATH} "${CMAKE_SOURCE_DIR}/build/bin")
+#set(ENV{SDL2_CONFIG} "${CMAKE_SOURCE_DIR}/build/bin")
 
 
 if(WIN32)
 
 	ExternalProject_Add(
   		SDLimage
-#  		DEPENDS SDLlib
   		SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/SDL_image
   		CONFIGURE_COMMAND ""
   		BUILD_COMMAND "msbuild.exe ${CMAKE_SOURCE_DIR}/SDL_image/VisualC/SDL_image.sln /t:Build /p:Configuration=Release;Platform=Win32"
@@ -34,10 +35,10 @@ if(WIN32)
 elseif(UNIX)
 	ExternalProject_Add(
 		SDLimage
-#		DEPENDS SDLlib
 		SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/SDL_image
-		CONFIGURE_COMMAND "${CMAKE_SOURCE_DIR}/external/SDL_image/configure" # --prefix=${CMAKE_SOURCE_DIR}/build/bin"
-		BUILD_COMMAND "make all"
+		CONFIGURE_COMMAND ${CMAKE_SOURCE_DIR}/external/SDL_image/autogen.sh && ${CMAKE_SOURCE_DIR}/external/SDL_image/configure --prefix=${CMAKE_SOURCE_DIR}/build
+#		COMMAND "${CMAKE_SOURCE_DIR}/external/SDL_image/configure --prefix=${CMAKE_SOURCE_DIR}/build"
+		BUILD_COMMAND make all
 #		INSTALL_COMMAND "make install"
 )
 endif()
@@ -49,5 +50,5 @@ add_dependencies(SDL2Test SDLlib SDLimage)
 if (WIN32)
 	target_link_libraries(SDL2Test ${CMAKE_SOURCE_DIR}/build/lib/SDL2.lib ${CMAKE_SOURCE_DIR}/build/lib/SDL2main.lib)
 elseif(UNIX)
-	target_link_libraries(SDL2Test ${CMAKE_SOURCE_DIR}/build/lib/libSDL2.a ${CMAKE_SOURCE_DIR}/build/lib/libSDL2main.a)
+	target_link_libraries(SDL2Test ${CMAKE_SOURCE_DIR}/build/lib/libSDL2.a ${CMAKE_SOURCE_DIR}/build/lib/libSDL2main.a ${CMAKE_SOURCE_DIR}/build/lib/libSDL2_image.a dl ${CMAKE_THREAD_LIBS_INIT} sndio)
 endif()

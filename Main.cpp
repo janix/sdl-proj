@@ -12,8 +12,8 @@ SDL_Window* gWindow = NULL;
 SDL_Surface* gScreenSurface = NULL;
 SDL_Surface* gHelloWorld = NULL;
 
-int SCREEN_WIDTH = 410;
-int SCREEN_HEIGHT = 308;
+int SCREEN_WIDTH = 600;
+int SCREEN_HEIGHT = 600;
 
 bool init()
 {
@@ -86,6 +86,8 @@ int main(int argc, char* args[])
 		printf("Failed to initialize!\n");
 	}
 	loadSurface("images/hello.png");
+	SDL_Delay(3000);
+
 	close();
 
 	return 0;
