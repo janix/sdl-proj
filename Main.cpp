@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string>
 
+
 bool init();
 SDL_Surface* loadSurface(std::string path);
 void close();
