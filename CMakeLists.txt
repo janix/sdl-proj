@@ -15,4 +15,4 @@ ExternalProject_Add(
 add_executable(SDL2Test Main.cpp)
 add_dependencies(SDL2Test SDLlib)
 
-target_link_libraries(SDL2Test ${CMAKE_BINARY_DIR}/lib/libSDL2.a)
+target_link_libraries(SDL2Test ${CMAKE_BINARY_DIR}/lib/libSDL2.so)
