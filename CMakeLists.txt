@@ -15,13 +15,12 @@ ExternalProject_Add(
   SDLimage
   DEPENDS SDLlib
   SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/SDL_image
-  CONFIGURE_COMMAND ${CMAKE_COMMAND}
-  BUILD_COMMAND ${CMAKE_COMMAND} nmake all
-  INSTALL_COMMAND ${CMAKE_COMMAND} 
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND "msbuild.exe ${CMAKE_SOURCE_DIR}/SDL_image/VisualC/SDL_image.sln /t:Build /p:Configuration=Release;Platform=Win32"
 )
 
 add_executable(SDL2Test Main.cpp)
-add_dependencies(SDL2Test SDLlib)
+add_dependencies(SDL2Test SDLlib SDLimage)
 
 if (WIN32)
 	target_link_libraries(SDL2Test ${CMAKE_SOURCE_DIR}/build/lib/SDL2.lib ${CMAKE_SOURCE_DIR}/build/lib/SDL2main.lib)
